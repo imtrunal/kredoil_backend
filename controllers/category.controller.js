@@ -114,8 +114,10 @@ exports.getAllCategories = async (req, res, next) => {
     const skip = (page - 1) * limit;
 
     const categories = await categoryModel
-      .find()
-
+      .find({
+        deletedAt: { $exists: false },
+        deletedBy: { $exists: false },
+      })
       .skip(skip)
       .limit(limit);
 
@@ -232,7 +234,7 @@ exports.getCategoryStock = async (req, res) => {
     });
   } catch (error) {
     console.log(error);
-    
+
     res.status(500).json({ message: "Internal server error" });
   }
 };
